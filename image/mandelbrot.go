@@ -29,7 +29,7 @@ func pointTendsToinfinity(x, y, w, h, maxItersPerPixel int) (n int) {
 	for ; n < maxItersPerPixel; n++ {
 		zi = zi*zi + z
 
-		if abs(real(zi*zi)+imag(zi*zi)) > 20 {
+		if abs(real(zi)+imag(zi)) > 20 {
 			break
 		}
 	}
