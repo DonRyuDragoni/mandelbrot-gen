@@ -8,9 +8,9 @@ import (
 
 var (
 	imgfile          = "img.png"
-	size_x           = 1000
-	size_y           = 1000
-	maxItersPerPixel = 100
+	size_y           = 2000
+	size_x           = size_y * 16 / 9
+	maxItersPerPixel = 500
 )
 
 func main() {

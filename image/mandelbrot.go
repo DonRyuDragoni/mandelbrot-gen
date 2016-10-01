@@ -19,19 +19,15 @@ func abs(n float32) float32 {
 Checks if a given point is tending twards infinity.
 */
 func pointTendsToinfinity(x, y, w, h, maxItersPerPixel int) (n int) {
-	maxval := float32(1.4)
-	minval := -maxval
+	z := complex(Map(x, 0, w, -2.5, 1.), Map(y, 0, h, -1., 1.))
 
-	z := complex(Map(x, 0, w, minval, maxval), Map(y, 0, h, minval, maxval))
+	rr := real(z) * real(z)
+	ii := imag(z) * imag(z)
 
-	zi := z
-
-	for ; n < maxItersPerPixel; n++ {
+	for zi := z; n < maxItersPerPixel && rr+ii < 4; n++ {
 		zi = zi*zi + z
 
-		if abs(real(zi)+imag(zi)) > 20 {
-			break
-		}
+		rr, ii = real(zi)*real(zi), imag(zi)*imag(zi)
 	}
 
 	return
