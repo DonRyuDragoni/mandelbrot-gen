@@ -5,17 +5,6 @@ type MandelbrotSetImage struct {
 }
 
 /*
-Returns the absolute value of a number.
-*/
-func abs(n float32) float32 {
-	if n < float32(0) {
-		return -n
-	} else {
-		return n
-	}
-}
-
-/*
 Checks if a given point is tending twards infinity.
 */
 func pointTendsToinfinity(x, y, w, h, maxItersPerPixel int) (n int) {
