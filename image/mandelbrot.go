@@ -5,25 +5,9 @@ import (
 )
 
 type MandelbrotSetImage struct {
-	Img *Image
-}
-
-/*
-Checks if a given point is tending twards infinity.
-*/
-func pointTendsToinfinity(x, y, w, h, maxItersPerPixel int) (n int) {
-	z := complex(Map(x, 0, w, -2.5, 1.), Map(y, 0, h, -1., 1.))
-
-	rr := real(z) * real(z)
-	ii := imag(z) * imag(z)
-
-	for zi := z; n < maxItersPerPixel && rr+ii < 4; n++ {
-		zi = zi*zi + z
-
-		rr, ii = real(zi)*real(zi), imag(zi)*imag(zi)
-	}
-
-	return
+	img    *Image
+	width  int
+	height int
 }
 
 /*
@@ -38,7 +22,11 @@ colors -> array containing the RGBA values for the given pixel
 */
 func DefaultColorFn(x, y, itersDone, maxItersPerPixel int) (colors [4]uint8) {
 	if itersDone != maxItersPerPixel {
-		brightness := uint8(Map(itersDone, 0, maxItersPerPixel, 0, 255))
+		brightness := uint8(remap(
+			float32(itersDone),
+			0, float32(maxItersPerPixel),
+			0, 255,
+		))
 		colors[0] = brightness
 		colors[1] = brightness
 		colors[2] = brightness
@@ -53,63 +41,31 @@ func DefaultColorFn(x, y, itersDone, maxItersPerPixel int) (colors [4]uint8) {
 	return
 }
 
-/*
-Split the interval [0, `endPoint`] into `length` equaly-spaced points.
-*/
-func splitCols(endPoint, length int) []int {
-	grouplist := make([]int, length)
-
-	for start, i := 0, 0; i < length; i++ {
-		grouplist[i] = start
-		start += endPoint / length
-	}
-
-	return grouplist
-}
-
-/*
-Basically the same as splitCols, but returns a slice of `[start, end]`
-representing the initial and the final points present in each ith interval.
-*/
-func pointList(endPoint, length int) [][2]int {
-	points := make([][2]int, length)
-	s := append(splitCols(endPoint, length), endPoint)
-
-	for i := 0; i < len(s)-1; i++ {
-		if i == 0 {
-			points[i][0] = s[i]
-		} else {
-			points[i][0] = s[i] + 1
-		}
-
-		points[i][1] = s[i+1]
-	}
-
-	return points
-}
-
 type ColorFn func(int, int, int, int) [4]uint8
 
 func NewMandelbrot(size_x, size_y, maxItersPerPixel int,
 	colorer ColorFn, numThreads int) (m *MandelbrotSetImage) {
 	m = new(MandelbrotSetImage)
-	m.Img = NewImage(size_x, size_y)
+	m.width = size_x
+	m.height = size_y
+	m.img = NewImage(m.width, m.height)
 
-	threadPoints := pointList(m.Img.Width, numThreads)
+	threadPoints := pointList(m.width, numThreads)
 
 	var wg sync.WaitGroup
-	wg.Add(numThreads)
 
 	for _, p := range threadPoints {
+		wg.Add(1)
+
 		go func(startx, endx int) {
 			for x := startx; x <= endx; x++ {
-				for y := 0; y <= m.Img.Height; y++ {
-					n := pointTendsToinfinity(x, y, m.Img.Width, m.Img.Height,
+				for y := 0; y <= m.height; y++ {
+					n := pointTendsToinfinity(x, y, m.width, m.height,
 						maxItersPerPixel)
 
 					color := colorer(x, y, n, maxItersPerPixel)
 
-					m.Img.SetPixel(x, y, color[0], color[1], color[2], color[3])
+					m.setPixel(x, y, color[0], color[1], color[2], color[3])
 				}
 			}
 
@@ -120,4 +76,14 @@ func NewMandelbrot(size_x, size_y, maxItersPerPixel int,
 	wg.Wait()
 
 	return
+}
+
+func (m *MandelbrotSetImage) setPixel(x, y int, r, g, b, a uint8) {
+	m.img.SetPixel(x, y, r, g, b, a)
+}
+
+func (m *MandelbrotSetImage) Encode(outfile string,
+	overrideIfExists bool) error {
+
+	return m.img.Encode(outfile, overrideIfExists)
 }

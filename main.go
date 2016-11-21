@@ -18,7 +18,7 @@ func main() {
 	img := image.NewMandelbrot(size_x, size_y, maxItersPerPixel,
 		image.DefaultColorFn, threads)
 
-	err := img.Img.Encode(imgfile, true)
+	err := img.Encode(imgfile, true)
 	if err != nil {
 		fmt.Println("error:", err)
 	}

@@ -8,21 +8,10 @@ import (
 	"os"
 )
 
-/*
-Identical to P5.js' map()
-*/
-func Map(n, start1, stop1 int, start2, stop2 float32) float32 {
-	fn, fstart1, fstop1, fstart2, fstop2 := float32(n),
-		float32(start1),
-		float32(stop1),
-		float32(start2),
-		float32(stop2)
-	return ((fn-fstart1)/(fstop1-fstart1))*(fstop2-fstart2) + fstart2
-}
-
 type Image struct {
-	img           *image.NRGBA
-	Width, Height int
+	img    *image.NRGBA
+	width  int
+	height int
 }
 
 func NewImage(size_x, size_y int) *Image {
