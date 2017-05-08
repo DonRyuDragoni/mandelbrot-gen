@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"./image"
+	"github.com/DonRyuDragoni/mandelbrot/image"
 )
 
 var (
