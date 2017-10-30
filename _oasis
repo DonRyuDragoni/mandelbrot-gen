@@ -1,0 +1,13 @@
+OASISFormat: 0.4
+Name:        mandelbrot
+Version:     1.0.0
+Synopsis:    A mandelbrot set generator
+Authors:     DonRyuDragoni
+License:     MIT
+
+Executable main
+    BuildDepends:   graphics
+    BuildTools:     ocamlbuild
+    CompiledObject: best
+    MainIs:         main.ml
+    Path:           src
