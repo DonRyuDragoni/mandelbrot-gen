@@ -22,7 +22,7 @@ colors -> array containing the RGBA values for the given pixel
 */
 func DefaultColorFn(x, y, itersDone, maxItersPerPixel int) (colors [4]uint8) {
 	if itersDone != maxItersPerPixel {
-		brightness := uint8(remap(
+		brightness := uint8(Remap(
 			float32(itersDone),
 			0, float32(maxItersPerPixel),
 			0, 255,

@@ -3,7 +3,7 @@ package image
 /*
 Identical to P5.js' map()
 */
-func remap(n, start1, stop1, start2, stop2 float32) float32 {
+func Remap(n, start1, stop1, start2, stop2 float32) float32 {
 	return ((n-start1)/(stop1-start1))*(stop2-start2) + start2
 }
 
@@ -11,11 +11,11 @@ func remap(n, start1, stop1, start2, stop2 float32) float32 {
 Checks if a given point is tending twards infinity.
 */
 func pointTendsToinfinity(x, y, w, h, maxItersPerPixel int) (n int) {
-	z := complex(remap(
+	z := complex(Remap(
 		float32(x),
 		0, float32(w),
 		-2.5, 1.,
-	), remap(
+	), Remap(
 		float32(y),
 		0, float32(h),
 		-1., 1.,
