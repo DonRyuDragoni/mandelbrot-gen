@@ -14,10 +14,28 @@ let remap ni (start1i, stop1i) (start2i, stop2i) =
     and stop2  = float_of_int stop2i;
     in remapf n (start1, stop1) (start2, stop2);;
 
+(*
+ * Open a window with a given size.
+ *)
 let win size =
     Gr.open_graph
         (" " ^ (string_of_int size.x) ^ "x" ^ (string_of_int size.y));;
 
+(*
+ * Check if the corresponding complex number of the (x, y) point
+ *
+ *     z = x + y*i
+ *
+ * remains bounded when the function
+ *
+ *     f(z) = z^2 + c
+ *
+ * is applied to it multiple times
+ *
+ *     f(z), f(f(z)), f(f(f(z))), ...
+ *
+ * Returns the number of iterations.
+ *)
 let point_diverge max_iters x y =
     let rec div_r counter c z =
         if counter < max_iters && (norm2 z) < 4. then
@@ -29,6 +47,12 @@ let point_diverge max_iters x y =
 
     in div_r 0 z z;;
 
+(*
+ * Generate the mandelbrot set.
+ *
+ * Each element of the list is the number of iterations its corresponding
+ * complex number took in `point_diverge`.
+ *)
 let gen_set ?(max_iters = 63) size_x size_y =
     let rec divergence_lst acc p =
         let new_p = prev_point p size_x;
@@ -51,6 +75,11 @@ let gen_set ?(max_iters = 63) size_x size_y =
 
     in divergence_lst [] {x = size_x; y = size_y};;
 
+(*
+ * Given a set with `cols` columns, draw it.
+ *
+ * This function assumes a window is opened.
+ *)
 let draw_set set cols =
     let set_color p =
         let b = int_of_float (remap p (0, 63) (0, 255));
@@ -71,6 +100,9 @@ let size h =
        ; y = h
        };;
 
+(*
+ * Generate and draw the set in a window.
+ *)
 let () =
     let win_size = size 600
     in
