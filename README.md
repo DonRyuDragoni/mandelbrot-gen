@@ -33,4 +33,4 @@ $ ocaml setup.ml -build
 
 And you should have an executable in the root directory.
 
-To quit the program, simply press any key.
+To quit the program, simply press <kbd>q</kbd>.

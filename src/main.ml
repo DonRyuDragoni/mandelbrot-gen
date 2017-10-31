@@ -76,4 +76,12 @@ let () =
     in
     win win_size;
     draw_set (gen_set win_size.x win_size.y) win_size.x;
-    let _ = Gr.wait_next_event [Gr.Key_pressed] in ();;
+
+    let rec evnt_loop finished =
+        if (not finished) then
+            evnt_loop
+                (match Gr.read_key () with
+                 | 'q' -> true
+                 |  _  -> false)
+    in
+    evnt_loop false;;
